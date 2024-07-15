@@ -6,14 +6,36 @@
         <groupId>city.hiperium</groupId>
         <artifactId>parent-pom</artifactId>
         <version>1.0.0</version>
-        <relativePath />
     </parent>
 
     <artifactId>city-functions-parent</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
-    <name>city-functions-parent</name>
-    <description>Parent POM for Lambda functions in the City Admin module.</description>
+
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Parent POM for Lambda functions in the City Admin project.</description>
+    <url>https://github.com/hiperium/city-commons</url>
+
+    <licenses>
+        <license>
+            <name>GNU Affero General Public License v3.0</name>
+            <url>https://www.gnu.org/licenses/agpl-3.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Andres Solorzano</name>
+            <email>contact@hiperium.com</email>
+            <organization>Hiperium Inc.</organization>
+            <organizationUrl>https://hiperium.com</organizationUrl>
+        </developer>
+    </developers>
+    <scm>
+        <url>https://github.com/hiperium/city-commons</url>
+        <connection>scm:git:git://github.com/hiperium/city-commons.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/hiperium/city-commons.git</developerConnection>
+    </scm>
 
     <properties>
         <spring-cloud-aws.version>3.0.0</spring-cloud-aws.version>

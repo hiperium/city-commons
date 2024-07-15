@@ -6,17 +6,17 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.3.1</version>
-        <relativePath/>
     </parent>
 
     <groupId>city.hiperium</groupId>
     <artifactId>parent-pom</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
-    <name>parent-pom</name>
-    <description>Parent POM for all services in the Hiperium City project.</description>
 
-    <url />
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Parent POM for all services in the Hiperium City project.</description>
+    <url>https://github.com/hiperium/city-commons</url>
+
     <licenses>
         <license>
             <name>GNU Affero General Public License v3.0</name>
@@ -27,8 +27,9 @@
     <developers>
         <developer>
             <name>Andres Solorzano</name>
-            <organization>Hiperium LLC.</organization>
-            <email>andres.solorzano@hiperium.com</email>
+            <email>contact@hiperium.com</email>
+            <organization>Hiperium Inc.</organization>
+            <organizationUrl>https://hiperium.com</organizationUrl>
         </developer>
     </developers>
     <scm>
@@ -43,6 +44,7 @@
         <os-classifier.version>1.7.1</os-classifier.version>
         <logback-contrib.version>0.1.5</logback-contrib.version>
         <spring-modulith.version>1.2.1</spring-modulith.version>
+        <central-publishing.version>0.5.0</central-publishing.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -184,6 +186,31 @@
             <plugin>
                 <groupId>org.graalvm.buildtools</groupId>
                 <artifactId>native-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                        <configuration>
+                            <keyname>${gpg.keyname}</keyname>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>${central-publishing.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central</publishingServerId>
+                </configuration>
             </plugin>
         </plugins>
     </build>

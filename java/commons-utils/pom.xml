@@ -5,10 +5,11 @@
     <groupId>city.hiperium</groupId>
     <artifactId>commons-utils</artifactId>
     <version>1.0.0</version>
-    <name>common-utils</name>
-    <description>Common utilities used by other services in the Hiperium City project.</description>
 
-    <url />
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Common utilities used by other services in the Hiperium City project.</description>
+    <url>https://github.com/hiperium/city-commons</url>
+
     <licenses>
         <license>
             <name>GNU Affero General Public License v3.0</name>
@@ -19,8 +20,9 @@
     <developers>
         <developer>
             <name>Andres Solorzano</name>
-            <organization>Hiperium LLC.</organization>
-            <email>andres.solorzano@hiperium.com</email>
+            <email>contact@hiperium.com</email>
+            <organization>Hiperium Inc.</organization>
+            <organizationUrl>https://hiperium.com</organizationUrl>
         </developer>
     </developers>
     <scm>
