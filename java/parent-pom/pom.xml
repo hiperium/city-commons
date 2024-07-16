@@ -10,7 +10,7 @@
 
     <groupId>city.hiperium</groupId>
     <artifactId>parent-pom</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <packaging>pom</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -40,6 +40,7 @@
 
     <properties>
         <java.version>21</java.version>
+        <maven-gpg.version>3.2.4</maven-gpg.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <os-classifier.version>1.7.1</os-classifier.version>
         <logback-contrib.version>0.1.5</logback-contrib.version>
@@ -190,6 +191,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
+                <version>${maven-gpg.version}</version>
                 <executions>
                     <execution>
                         <id>sign-artifacts</id>
