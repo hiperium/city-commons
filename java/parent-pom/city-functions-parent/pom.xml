@@ -98,27 +98,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>jar-zip</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                        <inherited>false</inherited>
-                    </execution>
-                </executions>
-                <configuration>
-                    <descriptors>
-                        <descriptor>tools/assembly/jar.xml</descriptor>
-                    </descriptors>
-                    <appendAssemblyId>false</appendAssemblyId>
-                    <finalName>jar-assembly</finalName>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
@@ -143,27 +122,6 @@
                             <buildArgs>
                                 <buildArg>--enable-url-protocols=http,https</buildArg>
                             </buildArgs>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-assembly-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>native-zip</id>
-                                <goals>
-                                    <goal>single</goal>
-                                </goals>
-                                <phase>package</phase>
-                                <inherited>false</inherited>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <descriptors>
-                                <descriptor>tools/assembly/native.xml</descriptor>
-                            </descriptors>
-                            <appendAssemblyId>false</appendAssemblyId>
-                            <finalName>native-assembly</finalName>
                         </configuration>
                     </plugin>
                 </plugins>
