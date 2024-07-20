@@ -1,7 +1,7 @@
 ### Commons for the Hiperium City project.
 
 * **Author**: [Andres Solorzano](https://www.linkedin.com/in/aosolorzano/).
-* **Level**: 200 - Basic.
+* **Level**: 200 - Intermediate.
 * **Technologies**: Java, Maven 3, Docker.
 
 What is it?
