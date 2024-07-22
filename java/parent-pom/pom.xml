@@ -14,7 +14,7 @@
     <packaging>pom</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
-    <description>Parent POM for all services in the Hiperium City project.</description>
+    <description>Parent POM for all cloud-native applications in the Hiperium City project.</description>
     <url>https://github.com/hiperium/city-commons</url>
 
     <licenses>

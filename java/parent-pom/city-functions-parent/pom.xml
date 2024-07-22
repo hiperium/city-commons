@@ -13,7 +13,7 @@
     <packaging>pom</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
-    <description>Parent POM for Lambda functions in the City Admin project.</description>
+    <description>Parent POM for AWS Lambda functions in the City Module project.</description>
     <url>https://github.com/hiperium/city-commons</url>
 
     <licenses>
