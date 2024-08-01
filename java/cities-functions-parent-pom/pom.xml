@@ -4,17 +4,17 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>city.hiperium</groupId>
-        <artifactId>parent-pom</artifactId>
-        <version>1.0.3</version>
+        <artifactId>cities-parent-pom</artifactId>
+        <version>1.0.2</version>
     </parent>
 
-    <artifactId>city-functions-parent</artifactId>
-    <version>1.0.4</version>
+    <artifactId>cities-functions-parent-pom</artifactId>
+    <version>1.0.0</version>
     <packaging>pom</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
-    <description>Parent POM for AWS Lambda functions in the City Module project.</description>
-    <url>https://github.com/hiperium/city-commons</url>
+    <description>Parent POM for all AWS Lambda functions in the Hiperium City project.</description>
+    <url>https://github.com/hiperium/city-commons-module</url>
 
     <licenses>
         <license>
@@ -33,8 +33,8 @@
     </developers>
     <scm>
         <url>https://github.com/hiperium/city-commons</url>
-        <connection>scm:git:git://github.com/hiperium/city-commons.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/hiperium/city-commons.git</developerConnection>
+        <connection>scm:git:git://github.com/hiperium/city-commons-module.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/hiperium/city-commons-module.git</developerConnection>
     </scm>
 
     <properties>

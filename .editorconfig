@@ -7,5 +7,5 @@ end_of_line = lf
 indent_style = space
 insert_final_newline = true
 
-[*.{java,ts}]
+[*.{java,ts,sh}]
 max_line_length = 120

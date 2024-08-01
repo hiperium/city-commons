@@ -9,13 +9,13 @@
     </parent>
 
     <groupId>city.hiperium</groupId>
-    <artifactId>parent-pom</artifactId>
-    <version>1.0.3</version>
+    <artifactId>cities-parent-pom</artifactId>
+    <version>1.0.2</version>
     <packaging>pom</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
-    <description>Parent POM for all cloud-native applications in the Hiperium City project.</description>
-    <url>https://github.com/hiperium/city-commons</url>
+    <description>Parent POM for all services/functions in the Hiperium City project.</description>
+    <url>https://github.com/hiperium/city-commons-module</url>
 
     <licenses>
         <license>
@@ -34,29 +34,35 @@
     </developers>
     <scm>
         <url>https://github.com/hiperium/city-commons</url>
-        <connection>scm:git:git://github.com/hiperium/city-commons.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/hiperium/city-commons.git</developerConnection>
+        <connection>scm:git:git://github.com/hiperium/city-commons-module.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/hiperium/city-commons-module.git</developerConnection>
     </scm>
 
     <properties>
         <java.version>21</java.version>
         <maven-gpg.version>3.2.4</maven-gpg.version>
-        <mapstruct.version>1.5.5.Final</mapstruct.version>
         <os-classifier.version>1.7.1</os-classifier.version>
-        <logback-contrib.version>0.1.5</logback-contrib.version>
-        <spring-modulith.version>1.2.1</spring-modulith.version>
+        <cities-utils-bom.version>1.0.0</cities-utils-bom.version>
         <central-publishing.version>0.5.0</central-publishing.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
+        <spring-modulith-bom.version>1.2.1</spring-modulith-bom.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>city.hiperium</groupId>
+                <artifactId>cities-utils-bom</artifactId>
+                <version>${cities-utils-bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.springframework.modulith</groupId>
                 <artifactId>spring-modulith-bom</artifactId>
-                <version>${spring-modulith.version}</version>
+                <version>${spring-modulith-bom.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -113,30 +119,6 @@
             <artifactId>spring-boot-docker-compose</artifactId>
             <scope>runtime</scope>
             <optional>true</optional>
-        </dependency>
-
-        <!-- JSON LOGGING -->
-        <dependency>
-            <groupId>ch.qos.logback.contrib</groupId>
-            <artifactId>logback-jackson</artifactId>
-            <version>${logback-contrib.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback.contrib</groupId>
-            <artifactId>logback-json-classic</artifactId>
-            <version>${logback-contrib.version}</version>
-        </dependency>
-
-        <!-- MAPSTRUCT -->
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-            <version>${mapstruct.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-processor</artifactId>
-            <version>${mapstruct.version}</version>
         </dependency>
 
         <!-- TESTING -->
@@ -205,6 +187,7 @@
                             <goal>sign</goal>
                         </goals>
                         <configuration>
+                            <!--suppress UnresolvedMavenProperty -->
                             <keyname>${gpg.keyname}</keyname>
                             <gpgArguments>
                                 <arg>--pinentry-mode</arg>

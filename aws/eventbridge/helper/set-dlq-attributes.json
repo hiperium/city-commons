@@ -1,0 +1,4 @@
+{
+  "MaximumMessageSize": "131072",
+  "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"events.amazonaws.com\"},\"Action\":\"sqs:SendMessage\",\"Resource\":\"arn:aws:sqs:AWS_REGION:ACCOUNT_ID:QUEUE_NAME\",\"Condition\":{\"ArnEquals\":{\"aws:SourceArn\":\"arn:aws:events:AWS_REGION:ACCOUNT_ID:event-bus/EVENT_BUS_NAME\"}}}]}"
+}
