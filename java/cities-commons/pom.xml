@@ -2,13 +2,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>3.3.2</version>
+        <relativePath/>
+    </parent>
+
     <groupId>city.hiperium</groupId>
     <artifactId>cities-commons</artifactId>
     <version>1.0.0</version>
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Common classes used by services/functions in the Hiperium City project.</description>
-    <url>https://github.com/hiperium/city-commons</url>
+    <url>https://github.com/hiperium/city-commons-module</url>
 
     <licenses>
         <license>
@@ -34,33 +41,32 @@
     <properties>
         <java.version>21</java.version>
         <maven-gpg.version>3.2.4</maven-gpg.version>
-        <cities-utils-bom.version>1.0.0</cities-utils-bom.version>
         <central-publishing.version>0.5.0</central-publishing.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>city.hiperium</groupId>
-                <artifactId>cities-utils-bom</artifactId>
-                <version>${cities-utils-bom.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
         <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-processor</artifactId>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
         </dependency>
     </dependencies>
 
@@ -76,6 +82,34 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <show>public</show>
+                    <failOnWarnings>true</failOnWarnings>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
                 <version>${maven-gpg.version}</version>
                 <executions>
@@ -86,6 +120,7 @@
                             <goal>sign</goal>
                         </goals>
                         <configuration>
+                            <!--suppress UnresolvedMavenProperty -->
                             <keyname>${gpg.keyname}</keyname>
                             <gpgArguments>
                                 <arg>--pinentry-mode</arg>

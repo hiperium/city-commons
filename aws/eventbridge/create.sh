@@ -23,7 +23,7 @@ aws events create-event-bus                             \
 echo "DONE!"
 
 echo ""
-echo "CREATING EVENTBRIDGE EVENT-BUS..."
+echo "CREATING EVENT-BUS DLQ POLICY..."
 sed -i'.bak' -e "s/AWS_REGION/$AWS_WORKLOADS_REGION/g; s/AWS_ACCOUNT_ID/$AWS_WORKLOADS_ACCOUNT_ID/g; s/QUEUE_NAME/$DLQ_NAME/g; s/EVENT_BUS_NAME/$EVENT_BUS_NAME/g" \
     "$WORKING_DIR"/aws/eventbridge/helper/set-dlq-attributes.json
 

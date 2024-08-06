@@ -6,11 +6,12 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.3.2</version>
+        <relativePath/>
     </parent>
 
     <groupId>city.hiperium</groupId>
     <artifactId>cities-parent-pom</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <packaging>pom</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -33,7 +34,7 @@
         </developer>
     </developers>
     <scm>
-        <url>https://github.com/hiperium/city-commons</url>
+        <url>https://github.com/hiperium/city-commons-module</url>
         <connection>scm:git:git://github.com/hiperium/city-commons-module.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/hiperium/city-commons-module.git</developerConnection>
     </scm>
@@ -41,8 +42,10 @@
     <properties>
         <java.version>21</java.version>
         <maven-gpg.version>3.2.4</maven-gpg.version>
+        <mapstruct.version>1.5.5.Final</mapstruct.version>
         <os-classifier.version>1.7.1</os-classifier.version>
-        <cities-utils-bom.version>1.0.0</cities-utils-bom.version>
+        <cities-commons.version>1.0.0</cities-commons.version>
+        <spring-cloud-aws.version>3.1.1</spring-cloud-aws.version>
         <central-publishing.version>0.5.0</central-publishing.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
@@ -53,9 +56,9 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>city.hiperium</groupId>
-                <artifactId>cities-utils-bom</artifactId>
-                <version>${cities-utils-bom.version}</version>
+                <groupId>io.awspring.cloud</groupId>
+                <artifactId>spring-cloud-aws-dependencies</artifactId>
+                <version>${spring-cloud-aws.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -91,24 +94,48 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.yaml</groupId>
-                    <artifactId>snakeyaml</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-
-        <!-- SPRING DEVTOOLS -->
         <dependency>
             <groupId>org.springframework.modulith</groupId>
             <artifactId>spring-modulith-starter-core</artifactId>
         </dependency>
+
+        <!-- SPRING CLOUD AWS -->
+        <dependency>
+            <groupId>io.awspring.cloud</groupId>
+            <artifactId>spring-cloud-aws-starter</artifactId>
+        </dependency>
+
+        <!-- HIPERIUM COMMONS -->
+        <dependency>
+            <groupId>city.hiperium</groupId>
+            <artifactId>cities-commons</artifactId>
+            <version>${cities-commons.version}</version>
+        </dependency>
+
+        <!-- UTILITIES -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>${mapstruct.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <version>${mapstruct.version}</version>
+        </dependency>
+
+        <!-- SPRING DEVTOOLS -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
@@ -119,6 +146,16 @@
             <artifactId>spring-boot-docker-compose</artifactId>
             <scope>runtime</scope>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.modulith</groupId>
+            <artifactId>spring-modulith-actuator</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.modulith</groupId>
+            <artifactId>spring-modulith-observability</artifactId>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- TESTING -->
@@ -140,6 +177,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-testcontainers</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>localstack</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -170,6 +212,14 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.graalvm.buildtools</groupId>
