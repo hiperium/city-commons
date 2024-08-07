@@ -11,7 +11,7 @@
 
     <groupId>city.hiperium</groupId>
     <artifactId>cities-parent-pom</artifactId>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
     <packaging>pom</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -291,6 +291,7 @@
                                 <argument>${start-class}</argument>
                             </arguments>
                             <environmentVariables>
+                                <SPRING_PROFILES_ACTIVE>local</SPRING_PROFILES_ACTIVE>
                                 <SPRING_CLOUD_AWS_ENDPOINT>http://localhost:4566</SPRING_CLOUD_AWS_ENDPOINT>
                                 <SPRING_DOCKER_COMPOSE_FILE>tools/spring/compose.yaml</SPRING_DOCKER_COMPOSE_FILE>
                             </environmentVariables>
