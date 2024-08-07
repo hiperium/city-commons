@@ -28,6 +28,7 @@ public class HiperiumLoggerLayout extends LayoutBase<ILoggingEvent> {
 
     private boolean includeMDC = true;
     private boolean prettyPrint = false;
+    private boolean addLineSeparator = false;
     private boolean includeThreadName = true;
     private boolean includeContextName = true;
 
@@ -68,19 +69,22 @@ public class HiperiumLoggerLayout extends LayoutBase<ILoggingEvent> {
      */
     @Override
     public String doLayout(ILoggingEvent event) {
-        Map<String, Object> log = new LinkedHashMap<>();
-        log.put("timestamp", this.formatTimestamp(event));
-        log.put("logger", event.getLoggerName());
-        log.put("level", event.getLevel().toString());
-        addMessage(event, log);
-        addThread(event, log);
-        addContext(event, log);
-        addMDC(event, log);
+        Map<String, Object> logDataMap = new LinkedHashMap<>();
+
+        logDataMap.put("timestamp", this.formatTimestamp(event));
+        logDataMap.put("logger", event.getLoggerName());
+        logDataMap.put("level", event.getLevel().toString());
+        this.addMessage(event, logDataMap);
+        this.addThread(event, logDataMap);
+        this.addContext(event, logDataMap);
+        this.addMDC(event, logDataMap);
+
         try {
-            String json = OBJECT_MAPPER.writeValueAsString(log);
-            return json + System.lineSeparator();
-        } catch (JsonProcessingException e) {
-            return "Couldn't serialize a message map: " + e.getMessage();
+            String logDataJson = OBJECT_MAPPER.writeValueAsString(logDataMap);
+            return logDataJson + (this.addLineSeparator ? System.lineSeparator() : "");
+        } catch (JsonProcessingException exception) {
+            super.addError("Couldn't serialize a message map: ", exception);
+            return logDataMap.toString();
         }
     }
 
@@ -90,34 +94,42 @@ public class HiperiumLoggerLayout extends LayoutBase<ILoggingEvent> {
         return zonedDateTime.format(this.dateTimeFormatter);
     }
 
-    private void addThread(ILoggingEvent event, Map<String, Object> log) {
+    private void addThread(ILoggingEvent event, Map<String, Object> logDataMap) {
         if (this.includeThreadName) {
-            log.put("thread", event.getThreadName());
+            logDataMap.put("thread", event.getThreadName());
         }
     }
 
-    private void addMessage(ILoggingEvent loggingEvent, Map<String, Object> currentMessageMap) {
+    private void addMessage(ILoggingEvent loggingEvent, Map<String, Object> logDataMap) {
         Object[] argumentArray = loggingEvent.getArgumentArray();
         if (argumentArray != null && argumentArray[0] instanceof Map) {
-            currentMessageMap.put("message", argumentArray[0]);
+            logDataMap.put("message", argumentArray[0]);
         } else {
-            currentMessageMap.put("message", loggingEvent.getFormattedMessage());
+            logDataMap.put("message", loggingEvent.getFormattedMessage());
         }
     }
 
-    private void addContext(ILoggingEvent event, Map<String, Object> logMessage) {
+    private void addContext(ILoggingEvent event, Map<String, Object> logDataMap) {
         if (this.includeContextName) {
-            logMessage.put("context", event.getLoggerContextVO().getName());
+            logDataMap.put("context", event.getLoggerContextVO().getName());
         }
     }
 
-    private void addMDC(ILoggingEvent event, Map<String, Object> log) {
+    private void addMDC(ILoggingEvent event, Map<String, Object> logDataMap) {
         if (this.includeMDC) {
             Map<String, String> mdc = event.getMDCPropertyMap();
             if (mdc != null && !mdc.isEmpty()) {
-                log.put("mdc", mdc);
+                logDataMap.put("mdc", mdc);
             }
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void stop() {
+        super.stop();
     }
 
     /**
@@ -229,5 +241,24 @@ public class HiperiumLoggerLayout extends LayoutBase<ILoggingEvent> {
      */
     public void setIncludeMDC(boolean includeMDC) {
         this.includeMDC = includeMDC;
+    }
+
+    /**
+     * Determines whether to add a line separator in the log message.
+     *
+     * @return true if a line separator should be added, false otherwise
+     */
+    public boolean isAddLineSeparator() {
+        return addLineSeparator;
+    }
+
+    /**
+     * Sets the flag indicating whether a line separator should be added to the log message.
+     * If true, a line separator will be added; if false, no line separator will be added.
+     *
+     * @param addLineSeparator true to add a line separator, false otherwise.
+     */
+    public void setAddLineSeparator(boolean addLineSeparator) {
+        this.addLineSeparator = addLineSeparator;
     }
 }
