@@ -12,6 +12,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * This class defines the layout for logging events in the Hiperium format.
@@ -20,20 +21,21 @@ import java.util.Map;
  */
 public class HiperiumLoggerLayout extends LayoutBase<ILoggingEvent> {
 
+    private static final String LINE_BREAK = "\n";
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    private static final String DEFAULT_TIMESTAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'XXX";
+    private static final String DEFAULT_TIMESTAMP_FORMAT = "yyyy-MM-dd' 'HH:mm:ss' 'XXX";
+    private static final String ERROR_SERIALIZATION_MESSAGE = "Couldn't serialize a message map: ";
+
+    // Object pool for LinkedHashMap
+    private static final ConcurrentLinkedQueue<LinkedHashMap<String, Object>> MAP_POOL = new ConcurrentLinkedQueue<>();
 
     private ZoneId zoneId;
     private DateTimeFormatter dateTimeFormatter;
 
-    private boolean includeMDC = true;
-    private boolean prettyPrint = false;
-    private boolean addLineSeparator = false;
-    private boolean includeThreadName = true;
-    private boolean includeContextName = true;
-
     private String timeZoneId;
     private String dateTimeFormat;
+    private boolean prettyPrint = false;
+    private boolean numericTimestamps = true;
 
     /**
      * Represents a custom layout for log events in the HiperiumLogger.
@@ -48,19 +50,8 @@ public class HiperiumLoggerLayout extends LayoutBase<ILoggingEvent> {
      */
     @Override
     public void start() {
-        if (this.prettyPrint) {
-            OBJECT_MAPPER.enable(SerializationFeature.INDENT_OUTPUT);
-        } else {
-            OBJECT_MAPPER.disable(SerializationFeature.INDENT_OUTPUT);
-        }
-        if (this.timeZoneId == null) {
-            this.timeZoneId = ZoneId.systemDefault().getId();
-        }
-        if (this.dateTimeFormat == null) {
-            this.dateTimeFormat = DEFAULT_TIMESTAMP_FORMAT;
-        }
-        this.zoneId = ZoneId.of(this.timeZoneId);
-        this.dateTimeFormatter = DateTimeFormatter.ofPattern(this.dateTimeFormat);
+        this.configureObjectMapper();
+        this.initializeDateTimeSettings();
         super.start();
     }
 
@@ -69,59 +60,81 @@ public class HiperiumLoggerLayout extends LayoutBase<ILoggingEvent> {
      */
     @Override
     public String doLayout(ILoggingEvent event) {
-        Map<String, Object> logDataMap = new LinkedHashMap<>();
+        LinkedHashMap<String, Object> logData = this.getMapFromPool();
 
-        logDataMap.put("timestamp", this.formatTimestamp(event));
-        logDataMap.put("logger", event.getLoggerName());
-        logDataMap.put("level", event.getLevel().toString());
-        this.addMessage(event, logDataMap);
-        this.addThread(event, logDataMap);
-        this.addContext(event, logDataMap);
-        this.addMDC(event, logDataMap);
+        logData.clear(); // Make sure the map is empty before use
+        logData.put("timestamp", this.formatTimestamp(event));
+        logData.put("logger", event.getLoggerName());
+        logData.put("level", event.getLevel().toString());
+        this.addMessage(event, logData);
+        logData.put("thread", event.getThreadName());
+        logData.put("context", event.getLoggerContextVO().getName());
+        this.addMDC(event, logData);
 
         try {
-            String logDataJson = OBJECT_MAPPER.writeValueAsString(logDataMap);
-            return logDataJson + (this.addLineSeparator ? System.lineSeparator() : "");
+            String logDataJson = OBJECT_MAPPER.writeValueAsString(logData);
+            return logDataJson + LINE_BREAK;
         } catch (JsonProcessingException exception) {
-            super.addError("Couldn't serialize a message map: ", exception);
-            return logDataMap.toString();
+            super.addError(ERROR_SERIALIZATION_MESSAGE, exception);
+            return logData.toString();
+        } finally {
+            logData.clear(); // Clear the map after use to avoid memory leaks.
+            this.returnMapToPool(logData); // Return the map to the pool.
         }
     }
 
-    private String formatTimestamp(ILoggingEvent loggingEvent) {
-        Instant instant = Instant.ofEpochMilli(loggingEvent.getTimeStamp());
-        ZonedDateTime zonedDateTime = instant.atZone(this.zoneId);
-        return zonedDateTime.format(this.dateTimeFormatter);
+    private LinkedHashMap<String, Object> getMapFromPool() {
+        LinkedHashMap<String, Object> map = MAP_POOL.poll();
+        return (map == null) ? new LinkedHashMap<>() : map;
     }
 
-    private void addThread(ILoggingEvent event, Map<String, Object> logDataMap) {
-        if (this.includeThreadName) {
-            logDataMap.put("thread", event.getThreadName());
+    private Object formatTimestamp(final ILoggingEvent loggingEvent) {
+        if (this.numericTimestamps) {
+            return loggingEvent.getTimeStamp();
+        } else {
+            Instant instant = Instant.ofEpochMilli(loggingEvent.getTimeStamp());
+            ZonedDateTime zonedDateTime = instant.atZone(this.zoneId);
+            return zonedDateTime.format(this.dateTimeFormatter);
         }
     }
 
-    private void addMessage(ILoggingEvent loggingEvent, Map<String, Object> logDataMap) {
+    private void addMessage(final ILoggingEvent loggingEvent, final Map<String, Object> logDataMap) {
         Object[] argumentArray = loggingEvent.getArgumentArray();
-        if (argumentArray != null && argumentArray[0] instanceof Map) {
-            logDataMap.put("message", argumentArray[0]);
+        if (argumentArray instanceof Object[] arr && arr[0] instanceof Map<?, ?>) {
+            logDataMap.put("message", arr[0]);
         } else {
             logDataMap.put("message", loggingEvent.getFormattedMessage());
         }
     }
 
-    private void addContext(ILoggingEvent event, Map<String, Object> logDataMap) {
-        if (this.includeContextName) {
-            logDataMap.put("context", event.getLoggerContextVO().getName());
+    private void addMDC(final ILoggingEvent event, final Map<String, Object> logDataMap) {
+        Map<String, String> mdc = event.getMDCPropertyMap();
+        if (mdc != null && !mdc.isEmpty()) {
+            logDataMap.put("mdc", mdc);
         }
     }
 
-    private void addMDC(ILoggingEvent event, Map<String, Object> logDataMap) {
-        if (this.includeMDC) {
-            Map<String, String> mdc = event.getMDCPropertyMap();
-            if (mdc != null && !mdc.isEmpty()) {
-                logDataMap.put("mdc", mdc);
-            }
+    private void returnMapToPool(LinkedHashMap<String, Object> map) {
+        MAP_POOL.offer(map);
+    }
+
+    private void configureObjectMapper() {
+        if (this.prettyPrint) {
+            OBJECT_MAPPER.enable(SerializationFeature.INDENT_OUTPUT);
+        } else {
+            OBJECT_MAPPER.disable(SerializationFeature.INDENT_OUTPUT);
         }
+    }
+
+    private void initializeDateTimeSettings() {
+        if (this.timeZoneId == null) {
+            this.timeZoneId = ZoneId.systemDefault().getId();
+        }
+        if (this.dateTimeFormat == null) {
+            this.dateTimeFormat = DEFAULT_TIMESTAMP_FORMAT;
+        }
+        this.zoneId = ZoneId.of(this.timeZoneId);
+        this.dateTimeFormatter = DateTimeFormatter.ofPattern(this.dateTimeFormat);
     }
 
     /**
@@ -133,72 +146,35 @@ public class HiperiumLoggerLayout extends LayoutBase<ILoggingEvent> {
     }
 
     /**
-     * Checks if the log messages should be pretty-printed.
+     * Returns the value of the "prettyPrint" flag.
      *
-     * @return true if the log messages should be pretty-printed, false otherwise.
+     * @return true if pretty printing is enabled, false otherwise
      */
     public boolean isPrettyPrint() {
         return prettyPrint;
     }
 
     /**
-     * Sets the flag indicating whether the resulting log output should be pretty-printed.
+     * Set whether to enable pretty-printing of the log output.
      *
-     * @param prettyPrint true if the log output should be pretty-printed, false otherwise
+     * @param prettyPrint true to enable pretty-printing, false otherwise
      */
     public void setPrettyPrint(boolean prettyPrint) {
         this.prettyPrint = prettyPrint;
     }
 
     /**
-     * Returns a boolean indicating whether the thread name should be included in the log message.
-     * If true, the thread name will be included; if false, the thread name will be excluded.
+     * Retrieves the time zone ID used by the HiperiumLoggerLayout instance.
      *
-     * @return true if the thread name should be included, false otherwise
-     */
-    public boolean isIncludeThreadName() {
-        return includeThreadName;
-    }
-
-    /**
-     * Sets whether to include the thread name in the log output.
-     *
-     * @param includeThreadName true if the thread name should be included, false otherwise
-     */
-    public void setIncludeThreadName(boolean includeThreadName) {
-        this.includeThreadName = includeThreadName;
-    }
-
-    /**
-     * Determines whether the context name should be included in the log message.
-     *
-     * @return true if the context name should be included, false otherwise.
-     */
-    public boolean isIncludeContextName() {
-        return includeContextName;
-    }
-
-    /**
-     * Sets the flag to include the context name in the logging output.
-     *
-     * @param includeContextName true if the context name should be included, false otherwise
-     */
-    public void setIncludeContextName(boolean includeContextName) {
-        this.includeContextName = includeContextName;
-    }
-
-    /**
-     * Gets the time zone ID used by this logger layout.
-     *
-     * @return The time zone ID.
+     * @return The time zone ID as a String.
      */
     public String getTimeZoneId() {
         return timeZoneId;
     }
 
     /**
-     * Sets the time zone ID for the logger layout.
-     * This time zone ID is used to format the timestamp in the log records.
+     * Sets the time zone ID for the HiperiumLoggerLayout.
+     * The time zone ID determines the time zone used for formatting timestamps in log events.
      *
      * @param timeZoneId the time zone ID to set
      */
@@ -207,58 +183,40 @@ public class HiperiumLoggerLayout extends LayoutBase<ILoggingEvent> {
     }
 
     /**
-     * Retrieves the current date and time format used by the logger layout.
+     * Returns the date and time format used by the HiperiumLoggerLayout.
+     * If no custom format is specified, it returns the default timestamp format.
      *
-     * @return The current date and time format.
+     * @return the date and time format
      */
     public String getDateTimeFormat() {
         return dateTimeFormat;
     }
 
     /**
-     * Sets the date and time format for the logger layout.
+     * Sets the format for the date and time in the HiperiumLoggerLayout.
+     * The format should follow the patterns specified in {@link DateTimeFormatter DateTimeFormatter}.
      *
-     * @param dateTimeFormat the new date and time format
+     * @param dateTimeFormat the format for the date and time
      */
     public void setDateTimeFormat(String dateTimeFormat) {
         this.dateTimeFormat = dateTimeFormat;
     }
 
     /**
-     * Determines whether the MDC (Mapped Diagnostic Context) should be included in the log output.
+     * Returns whether numeric timestamps are enabled or not.
      *
-     * @return true if the MDC should be included, false otherwise
+     * @return {@code true} if numeric timestamps are enabled, {@code false} otherwise.
      */
-    public boolean isIncludeMDC() {
-        return includeMDC;
+    public boolean isNumericTimestamps() {
+        return numericTimestamps;
     }
 
     /**
-     * Sets the flag indicating whether to include MDC (Mapped Diagnostic Context) in the log output.
-     * If set to true, MDC will be included in the log output. If set to false, MDC will be excluded.
+     * Sets whether numeric timestamps should be used.
      *
-     * @param includeMDC true to include MDC, false to exclude MDC
+     * @param numericTimestamps a boolean value indicating whether numeric timestamps should be used
      */
-    public void setIncludeMDC(boolean includeMDC) {
-        this.includeMDC = includeMDC;
-    }
-
-    /**
-     * Determines whether to add a line separator in the log message.
-     *
-     * @return true if a line separator should be added, false otherwise
-     */
-    public boolean isAddLineSeparator() {
-        return addLineSeparator;
-    }
-
-    /**
-     * Sets the flag indicating whether a line separator should be added to the log message.
-     * If true, a line separator will be added; if false, no line separator will be added.
-     *
-     * @param addLineSeparator true to add a line separator, false otherwise.
-     */
-    public void setAddLineSeparator(boolean addLineSeparator) {
-        this.addLineSeparator = addLineSeparator;
+    public void setNumericTimestamps(boolean numericTimestamps) {
+        this.numericTimestamps = numericTimestamps;
     }
 }
