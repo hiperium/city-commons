@@ -5,6 +5,8 @@ import ch.qos.logback.core.LayoutBase;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -32,14 +34,22 @@ public class HiperiumLoggerLayout extends LayoutBase<ILoggingEvent> {
     private ZoneId zoneId;
     private DateTimeFormatter dateTimeFormatter;
 
+    @Setter
+    @Getter
     private String timeZoneId;
+    @Setter
+    @Getter
     private String dateTimeFormat;
+    @Setter
+    @Getter
     private boolean prettyPrint = false;
+    @Setter
+    @Getter
     private boolean numericTimestamps = true;
 
     /**
-     * Represents a custom layout for log events in the HiperiumLogger.
-     * This layout converts log events into JSON format.
+     * HiperiumLoggerLayout is a custom layout used in the HiperiumLogger appender for the Logback framework.
+     * This layout formats log events into a JSON string, with additional fields and customization options.
      */
     public HiperiumLoggerLayout() {
         // Default constructor
@@ -145,78 +155,4 @@ public class HiperiumLoggerLayout extends LayoutBase<ILoggingEvent> {
         super.stop();
     }
 
-    /**
-     * Returns the value of the "prettyPrint" flag.
-     *
-     * @return true if pretty printing is enabled, false otherwise
-     */
-    public boolean isPrettyPrint() {
-        return prettyPrint;
-    }
-
-    /**
-     * Set whether to enable pretty-printing of the log output.
-     *
-     * @param prettyPrint true to enable pretty-printing, false otherwise
-     */
-    public void setPrettyPrint(boolean prettyPrint) {
-        this.prettyPrint = prettyPrint;
-    }
-
-    /**
-     * Retrieves the time zone ID used by the HiperiumLoggerLayout instance.
-     *
-     * @return The time zone ID as a String.
-     */
-    public String getTimeZoneId() {
-        return timeZoneId;
-    }
-
-    /**
-     * Sets the time zone ID for the HiperiumLoggerLayout.
-     * The time zone ID determines the time zone used for formatting timestamps in log events.
-     *
-     * @param timeZoneId the time zone ID to set
-     */
-    public void setTimeZoneId(String timeZoneId) {
-        this.timeZoneId = timeZoneId;
-    }
-
-    /**
-     * Returns the date and time format used by the HiperiumLoggerLayout.
-     * If no custom format is specified, it returns the default timestamp format.
-     *
-     * @return the date and time format
-     */
-    public String getDateTimeFormat() {
-        return dateTimeFormat;
-    }
-
-    /**
-     * Sets the format for the date and time in the HiperiumLoggerLayout.
-     * The format should follow the patterns specified in {@link DateTimeFormatter DateTimeFormatter}.
-     *
-     * @param dateTimeFormat the format for the date and time
-     */
-    public void setDateTimeFormat(String dateTimeFormat) {
-        this.dateTimeFormat = dateTimeFormat;
-    }
-
-    /**
-     * Returns whether numeric timestamps are enabled or not.
-     *
-     * @return {@code true} if numeric timestamps are enabled, {@code false} otherwise.
-     */
-    public boolean isNumericTimestamps() {
-        return numericTimestamps;
-    }
-
-    /**
-     * Sets whether numeric timestamps should be used.
-     *
-     * @param numericTimestamps a boolean value indicating whether numeric timestamps should be used
-     */
-    public void setNumericTimestamps(boolean numericTimestamps) {
-        this.numericTimestamps = numericTimestamps;
-    }
 }

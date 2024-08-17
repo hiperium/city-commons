@@ -13,6 +13,7 @@ import java.util.Map;
 public class HiperiumLogger {
 
     private static final String EMPTY_MESSAGE = "{}";
+
     private final Logger logger;
 
     /**
@@ -31,17 +32,21 @@ public class HiperiumLogger {
      * @param message the debug log message
      */
     public void debug(String message) {
-        this.logger.debug(message);
+        if (this.logger.isDebugEnabled()) {
+            this.logger.debug(message);
+        }
     }
 
     /**
-     * Outputs a debug log message with a message and detail.
+     * Outputs a debug log message with a message and object.
      *
      * @param message The log message.
-     * @param detail  The detail object to include in the log message.
+     * @param object  the object to be included in the log message.
      */
-    public void debug(String message, Object detail) {
-        this.logger.debug(EMPTY_MESSAGE, createMessageMap(message, detail));
+    public void debug(String message, Object object) {
+        if (this.logger.isDebugEnabled()) {
+            this.logger.debug(EMPTY_MESSAGE, createRegularMessage(message, object));
+        }
     }
 
     /**
@@ -54,29 +59,59 @@ public class HiperiumLogger {
     }
 
     /**
-     * Logs an informational message with a detail object.
+     * Logs an informational message with a object object.
      *
      * @param message The message to be logged.
-     * @param detail  The detail object to be included in the log.
+     * @param object  the object to be included in the log message.
      */
-    public void info(String message, Object detail) {
-        this.logger.info(EMPTY_MESSAGE, createMessageMap(message, detail));
+    public void info(String message, Object object) {
+        this.logger.info(EMPTY_MESSAGE, createRegularMessage(message, object));
+    }
+
+    /**
+     * Sends a warning log message with the provided message and object.
+     * This method is used to log warning messages using the underlying logger implementation.
+     *
+     * @param message the warning log message
+     * @param object the object to be included in the log message.
+     */
+    public void warn(String message, Object object) {
+        this.logger.warn(EMPTY_MESSAGE, createRegularMessage(message, object));
     }
 
     /**
      * Logs an error message with the provided message and detail.
      *
      * @param message The error message.
-     * @param detail The error detail.
+     * @param object the object to be included in the log message.
      */
-    public void error(String message, Object detail) {
-        this.logger.error(EMPTY_MESSAGE, createMessageMap(message, detail));
+    public void error(String message, Object object) {
+        this.logger.error(EMPTY_MESSAGE, createRegularMessage(message, object));
     }
 
-    private static Map<String, Object> createMessageMap(String text, Object detail) {
-        Map<String, Object> message = new LinkedHashMap<>();
-        message.put("detail", text);
-        message.put("payload", detail);
-        return message;
+    /**
+     * Logs an error message with a specified message, detail, and object.
+     *
+     * @param message The error message.
+     * @param detail  The error detail.
+     * @param object the object to be included in the log message.
+     */
+    public void error(String message, String detail, Object object) {
+        this.logger.error(EMPTY_MESSAGE, createDetailedMessage(message, detail, object));
+    }
+
+    private static Map<String, Object> createRegularMessage(String message, Object object) {
+        Map<String, Object> messageMap = new LinkedHashMap<>();
+        messageMap.put("text", message);
+        messageMap.put("value", object);
+        return messageMap;
+    }
+
+    private static Map<String, Object> createDetailedMessage(String message, String detail, Object object) {
+        Map<String, Object> messageMap = new LinkedHashMap<>();
+        messageMap.put("text", message);
+        messageMap.put("detail", detail);
+        messageMap.put("value", object);
+        return messageMap;
     }
 }
