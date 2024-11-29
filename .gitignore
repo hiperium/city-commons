@@ -56,14 +56,6 @@ buildNumber.properties
 .mvn/timing.properties
 
 ##############################
-## Gradle
-##############################
-.gradle
-.gradletasknamecache
-gradle-app.setting
-!gradle-wrapper.jar
-
-##############################
 ## IntelliJ
 ##############################
 out/
@@ -100,6 +92,10 @@ nb-configuration.xml
 ##############################
 .vscode/
 .code-workspace
+
+##############################
+## Miscellaneous
+##############################
 
 # Compiled Python bytecode
 *.py[cod]

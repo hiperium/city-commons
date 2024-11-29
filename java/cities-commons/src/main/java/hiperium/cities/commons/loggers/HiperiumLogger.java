@@ -3,22 +3,16 @@ package hiperium.cities.commons.loggers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 /**
  * The HiperiumLogger class is a logger utility that provides methods to log debug and informational messages.
  * It uses the SLF4J logging framework to perform the actual logging.
  */
 public class HiperiumLogger {
 
-    private static final String EMPTY_MESSAGE = "{}";
-
     private final Logger logger;
 
     /**
-     * The HiperiumLogger class is a logger utility that provides methods to log debug and informational messages.
-     * It uses the SLF4J logging framework to perform the actual logging.
+     * Constructs a new HiperiumLogger object for the specified class.
      *
      * @param clazz The class for which the logger is created.
      */
@@ -27,91 +21,65 @@ public class HiperiumLogger {
     }
 
     /**
-     * Sends a debug log message with the provided message.
+     * Logs a debug message, including any specified arguments, if debug logging is enabled.
      *
-     * @param message the debug log message
+     * @param message The message to log, which can contain placeholders for the arguments.
+     * @param arguments The arguments to be included in the log message. These will replace placeholders in the message.
      */
-    public void debug(String message) {
+    public void debug(String message, Object... arguments) {
         if (this.logger.isDebugEnabled()) {
-            this.logger.debug(message);
+            this.logger.debug(message, arguments);
         }
     }
 
     /**
-     * Outputs a debug log message with a message and object.
+     * Logs an informational message using the underlying SLF4J Logger, if info level logging is enabled.
+     * The message can be formatted using a template where arguments can be substituted in place of placeholders.
      *
-     * @param message The log message.
-     * @param object  the object to be included in the log message.
+     * @param message The message template to log. It may contain placeholders like '{}' for the arguments.
+     * @param arguments An array of objects that will replace placeholders in the message template.
      */
-    public void debug(String message, Object object) {
-        if (this.logger.isDebugEnabled()) {
-            this.logger.debug(EMPTY_MESSAGE, createRegularMessage(message, object));
+    public void info(String message, Object... arguments) {
+        if (this.logger.isInfoEnabled()) {
+            this.logger.info(message, arguments);
         }
     }
 
     /**
-     * Logs an informational message.
+     * Logs a warning message using the configured logger if warning level logging is enabled.
+     * The message can include placeholders for arguments, which will be replaced by the provided values.
      *
-     * @param message The message to log.
+     * @param message   The warning message to be logged, which may contain placeholders for argument substitution.
+     * @param arguments Optional arguments used to replace placeholders within the message.
      */
-    public void info(String message) {
-        this.logger.info(message);
+    public void warn(String message, Object... arguments) {
+        if (this.logger.isWarnEnabled()) {
+            this.logger.warn(message, arguments);
+        }
     }
 
     /**
-     * Logs an informational message with a object object.
+     * Logs an error message with optional arguments if error logging is enabled.
      *
-     * @param message The message to be logged.
-     * @param object  the object to be included in the log message.
+     * @param message   the error message to log
+     * @param arguments optional arguments to include in the log message
      */
-    public void info(String message, Object object) {
-        this.logger.info(EMPTY_MESSAGE, createRegularMessage(message, object));
+    public void error(String message, Object... arguments) {
+        if (this.logger.isErrorEnabled()) {
+            this.logger.error(message, arguments);
+        }
     }
 
     /**
-     * Sends a warning log message with the provided message and object.
-     * This method is used to log warning messages using the underlying logger implementation.
+     * Logs an error message along with a throwable using the configured logger
+     * if error level logging is enabled.
      *
-     * @param message the warning log message
-     * @param object the object to be included in the log message.
+     * @param message The error message to log.
+     * @param throwable The throwable associated with the error, providing stack trace information.
      */
-    public void warn(String message, Object object) {
-        this.logger.warn(EMPTY_MESSAGE, createRegularMessage(message, object));
-    }
-
-    /**
-     * Logs an error message with the provided message and detail.
-     *
-     * @param message The error message.
-     * @param object the object to be included in the log message.
-     */
-    public void error(String message, Object object) {
-        this.logger.error(EMPTY_MESSAGE, createRegularMessage(message, object));
-    }
-
-    /**
-     * Logs an error message with a specified message, detail, and object.
-     *
-     * @param message The error message.
-     * @param detail  The error detail.
-     * @param object the object to be included in the log message.
-     */
-    public void error(String message, String detail, Object object) {
-        this.logger.error(EMPTY_MESSAGE, createDetailedMessage(message, detail, object));
-    }
-
-    private static Map<String, Object> createRegularMessage(String message, Object object) {
-        Map<String, Object> messageMap = new LinkedHashMap<>();
-        messageMap.put("text", message);
-        messageMap.put("value", object);
-        return messageMap;
-    }
-
-    private static Map<String, Object> createDetailedMessage(String message, String detail, Object object) {
-        Map<String, Object> messageMap = new LinkedHashMap<>();
-        messageMap.put("text", message);
-        messageMap.put("detail", detail);
-        messageMap.put("value", object);
-        return messageMap;
+    public void error(String message, Throwable throwable) {
+        if (this.logger.isErrorEnabled()) {
+            this.logger.error(message, throwable);
+        }
     }
 }
