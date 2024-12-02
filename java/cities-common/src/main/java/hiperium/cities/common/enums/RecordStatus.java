@@ -1,4 +1,4 @@
-package hiperium.cities.commons.enums;
+package hiperium.cities.common.enums;
 
 /**
  * Represents the status of a record.

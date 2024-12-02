@@ -1,4 +1,4 @@
-package hiperium.cities.commons.loggers;
+package hiperium.cities.common.loggers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

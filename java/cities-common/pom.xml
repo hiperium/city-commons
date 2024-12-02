@@ -4,22 +4,18 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>city.hiperium</groupId>
-        <artifactId>hiperium-parent-pom</artifactId>
-        <version>1.0.0</version>
+        <artifactId>cities-parent-pom</artifactId>
+        <version>1.1.0</version>
         <relativePath/>
     </parent>
-    <artifactId>cities-commons</artifactId>
-    <version>1.0.5</version>
+
+    <artifactId>cities-common</artifactId>
+    <version>1.1.0</version>
     <packaging>jar</packaging>
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Common classes used by services/functions in the Hiperium City project.</description>
 
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-            <scope>provided</scope>
-        </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
@@ -38,6 +34,11 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>

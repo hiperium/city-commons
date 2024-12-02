@@ -1,11 +1,16 @@
-package hiperium.cities.commons.responses;
+package hiperium.cities.common.responses;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hiperium.cities.commons.exceptions.ParsingException;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import hiperium.cities.common.exceptions.ParsingException;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Represents an immutable HTTP function response which includes a status code, headers,
@@ -26,6 +31,13 @@ public record FunctionResponse(
      * Allows configuration of HTTP status code, headers, and body content for the response.
      */
     public static class Builder {
+
+        private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
+            .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+            .registerModule(new JavaTimeModule());
+
 
         private int statusCode = 200;
         private final Map<String, String> headers = new HashMap<>();
@@ -71,11 +83,14 @@ public record FunctionResponse(
          * @throws ParsingException if there is an error during JSON serialization of the object.
          */
         public Builder withBody(Object body) {
+            if (Objects.isNull(body)) {
+                this.body = null;
+                return this;
+            }
             try {
-                ObjectMapper mapper = new ObjectMapper();
-                this.body = mapper.writeValueAsString(body);
-            } catch (JsonProcessingException e) {
-                throw new ParsingException("Error serializing response body", e);
+                this.body = OBJECT_MAPPER.writeValueAsString(body);
+            } catch (JsonProcessingException exception) {
+                throw new ParsingException("Error serializing response body: " + body, exception);
             }
             return this;
         }
@@ -117,6 +132,7 @@ public record FunctionResponse(
      * @param message A string message describing the error.
      * @return A FunctionResponse object configured with the given status code and error message.
      */
+    //TODO: We need to also add a custom application error code to the response. Not only a message.
     public static FunctionResponse error(int statusCode, String message) {
         Map<String, String> errorBody = Map.of("message", message);
         return new Builder()

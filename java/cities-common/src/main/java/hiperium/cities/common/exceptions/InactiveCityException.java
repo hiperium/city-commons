@@ -1,4 +1,4 @@
-package hiperium.cities.commons.exceptions;
+package hiperium.cities.common.exceptions;
 
 /**
  * Exception thrown when a city is disabled.

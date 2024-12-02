@@ -1,4 +1,4 @@
-package hiperium.cities.commons.loggers;
+package hiperium.cities.common.loggers;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
@@ -6,7 +6,7 @@ import ch.qos.logback.core.LayoutBase;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import hiperium.cities.commons.utils.DateTimeUtils;
+import hiperium.cities.common.utils.DateTimeUtils;
 
 import java.time.DateTimeException;
 import java.time.Instant;

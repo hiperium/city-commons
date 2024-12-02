@@ -1,4 +1,4 @@
-package hiperium.cities.commons.exceptions;
+package hiperium.cities.common.exceptions;
 
 /**
  * The CityException class is an exception thrown when there is an error related to a city.

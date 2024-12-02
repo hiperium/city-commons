@@ -1,4 +1,4 @@
-package hiperium.cities.commons.utils;
+package hiperium.cities.common.utils;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;

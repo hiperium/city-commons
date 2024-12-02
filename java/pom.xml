@@ -10,13 +10,13 @@
     </parent>
 
     <groupId>city.hiperium</groupId>
-    <artifactId>hiperium-parent-pom</artifactId>
-    <version>1.0.0</version>
+    <artifactId>cities-parent-pom</artifactId>
+    <version>1.1.0</version>
     <packaging>pom</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
-    <description>Parent POM for all Hiperium projects.</description>
-    <url>https://github.com/hiperium/city-commons-module</url>
+    <description>Parent POM for all Hiperium City projects.</description>
+    <url>https://github.com/hiperium/city-commons</url>
 
     <licenses>
         <license>
@@ -36,9 +36,9 @@
     </developers>
 
     <scm>
-        <url>https://github.com/hiperium/city-commons-module</url>
-        <connection>scm:git:git://github.com/hiperium/city-commons-module.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/hiperium/city-commons-module.git</developerConnection>
+        <url>https://github.com/hiperium/city-commons</url>
+        <connection>scm:git:git://github.com/hiperium/city-commons.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/hiperium/city-commons.git</developerConnection>
     </scm>
 
     <properties>
@@ -61,6 +61,13 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.awspring.cloud</groupId>
+            <artifactId>spring-cloud-aws-starter</artifactId>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>

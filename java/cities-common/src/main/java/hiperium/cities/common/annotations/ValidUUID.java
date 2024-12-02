@@ -1,4 +1,4 @@
-package hiperium.cities.commons.annotations;
+package hiperium.cities.common.annotations;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

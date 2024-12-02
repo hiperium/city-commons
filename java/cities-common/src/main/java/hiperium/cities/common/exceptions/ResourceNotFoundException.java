@@ -1,4 +1,4 @@
-package hiperium.cities.commons.exceptions;
+package hiperium.cities.common.exceptions;
 
 /**
  * The ResourceNotFoundException class is an exception thrown when a resource is not found.

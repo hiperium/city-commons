@@ -1,10 +1,7 @@
-package hiperium.cities.commons.utils;
+package hiperium.cities.common.utils;
 
-import hiperium.cities.commons.loggers.HiperiumLogger;
+import hiperium.cities.common.loggers.HiperiumLogger;
 import org.awaitility.Awaitility;
-import org.springframework.lang.NonNull;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageHeaders;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.DescribeTableRequest;
 import software.amazon.awssdk.services.dynamodb.model.DescribeTableResponse;
@@ -12,7 +9,6 @@ import software.amazon.awssdk.services.dynamodb.model.ResourceNotFoundException;
 import software.amazon.awssdk.services.dynamodb.model.TableStatus;
 
 import java.time.Duration;
-import java.util.Map;
 
 /**
  * The TestUtils class provides utility methods for test-related operations.
@@ -53,27 +49,5 @@ public final class TestUtils {
                 }
                 return false;
             });
-    }
-
-    /**
-     * Creates a new message with the given byte array as the payload.
-     *
-     * @param bytes The byte array to be used as the payload.
-     * @return The newly created message.
-     */
-    public static Message<byte[]> createMessage(byte[] bytes) {
-        return new Message<>() {
-            @NonNull
-            @Override
-            public byte[] getPayload() {
-                return bytes;
-            }
-
-            @NonNull
-            @Override
-            public MessageHeaders getHeaders() {
-                return new MessageHeaders(Map.of());
-            }
-        };
     }
 }
