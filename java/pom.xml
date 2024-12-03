@@ -45,6 +45,7 @@
         <java.version>21</java.version>
         <maven-gpg.version>3.2.4</maven-gpg.version>
         <spring-cloud-aws.version>3.2.1</spring-cloud-aws.version>
+        <aws-lambda-events.version>2.0.2</aws-lambda-events.version>
         <central-publishing.version>0.5.0</central-publishing.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
@@ -58,6 +59,11 @@
                 <version>${spring-cloud-aws.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.amazonaws</groupId>
+                <artifactId>aws-lambda-java-events</artifactId>
+                <version>${aws-lambda-events.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -87,22 +93,6 @@
                         <id>attach-sources</id>
                         <goals>
                             <goal>jar-no-fork</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <show>public</show>
-                    <failOnWarnings>true</failOnWarnings>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
                         </goals>
                     </execution>
                 </executions>

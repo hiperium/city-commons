@@ -17,6 +17,7 @@
 
     <properties>
         <mapstruct.version>1.6.3</mapstruct.version>
+        <wrapper.version>1.0.27.RELEASE</wrapper.version>
         <os-classifier.version>1.7.1</os-classifier.version>
         <spring-cloud-func.version>4.1.4</spring-cloud-func.version>
     </properties>
@@ -56,20 +57,12 @@
             <artifactId>spring-cloud-function-adapter-aws</artifactId>
             <exclusions>
                 <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-webmvc</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>org.slf4j</groupId>
                     <artifactId>jul-to-slf4j</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>org.apache.logging.log4j</groupId>
                     <artifactId>log4j-to-slf4j</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.yaml</groupId>
-                    <artifactId>snakeyaml</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
