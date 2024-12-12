@@ -2,10 +2,10 @@
 FROM --platform=linux/arm64 public.ecr.aws/amazonlinux/amazonlinux:2023
 
 ### Amazon Linux installing dependencies
-RUN yum -y update                                                               && \
-    yum install -y tar zip unzip gzip bzip2-devel ed gcc gcc-c++ gcc-gfortran      \
-        less libcurl-devel openssl openssl-devel readline-devel xz-devel           \
-        zlib-devel glibc-static zlib-static                                     && \
+RUN yum -y update                                                         && \
+    yum install -y tar unzip gzip bzip2-devel ed gcc gcc-c++ gcc-gfortran    \
+        less libcurl-devel openssl openssl-devel readline-devel xz-devel     \
+        zlib-devel glibc-static zlib-static                               && \
     rm -rf /var/cache/yum
 
 ### GraalVM for OpenJDK - Verity LTS version at: https://github.com/graalvm/graalvm-ce-builds/releases
@@ -31,10 +31,6 @@ RUN ln -s /usr/lib/graalvm/bin/native-image   /usr/bin/native-image
 ### Environment Variables
 ENV JAVA_HOME       /usr/lib/graalvm
 ENV MAVEN_HOME      /usr/lib/maven
-ENV MAVEN_CONFIG    "$USER_HOME_DIR/.m2"
-
-# cache dependencies between runs.
-VOLUME "$USER_HOME_DIR/.m2"
 
 WORKDIR /workspace
 ENTRYPOINT ["sh"]
