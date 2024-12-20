@@ -1,8 +1,11 @@
 package hiperium.city.functions.common.enums;
 
+import lombok.Getter;
+
 /**
  * Represents the status of a record.
  */
+@Getter
 public enum RecordStatus {
 
     /**
@@ -19,14 +22,5 @@ public enum RecordStatus {
 
     RecordStatus(String value) {
         this.value = value;
-    }
-
-    /**
-     * Retrieves the value associated with the record status.
-     *
-     * @return the value as a String.
-     */
-    public String getValue() {
-        return value;
     }
 }

@@ -7,11 +7,11 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 /**
- * The FunctionUtils class provides utility constants and methods that support
+ * The FunctionsUtil class provides utility constants and methods that support
  * various functionalities within the application. It includes constants used
  * for configuration and an instance of an ObjectMapper for JSON operations.
  */
-public final class FunctionUtils {
+public final class FunctionsUtil {
 
     /**
      * A constant representing the name of the function parameter used to route messages.
@@ -28,7 +28,7 @@ public final class FunctionUtils {
         .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
         .registerModule(new JavaTimeModule());
 
-    private FunctionUtils() {
+    private FunctionsUtil() {
         throw new UnsupportedOperationException("Utility classes should not be instantiated.");
     }
 }

@@ -1,8 +1,6 @@
 package hiperium.city.functions.tests.utils;
 
 import org.awaitility.Awaitility;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.DescribeTableRequest;
 import software.amazon.awssdk.services.dynamodb.model.DescribeTableResponse;
@@ -11,14 +9,12 @@ import software.amazon.awssdk.services.dynamodb.model.TableStatus;
 import java.time.Duration;
 
 /**
- * The DynamoDbTableTest class provides utility methods for test-related operations.
+ * The DynamoDbTableUtil class provides utility methods for test-related operations.
  * It contains methods to wait for a DynamoDB table to be ready and to create a description with a byte array payload.
  */
-public final class DynamoDbTableTest {
+public final class DynamoDbTableUtil {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DynamoDbTableTest.class);
-
-    private DynamoDbTableTest() {
+    private DynamoDbTableUtil() {
         throw new UnsupportedOperationException("Utility classes should not be instantiated.");
     }
 
@@ -35,8 +31,6 @@ public final class DynamoDbTableTest {
                                                 final String tableName,
                                                 int maxWaitTime,
                                                 int checkInterval) {
-        LOGGER.info("Waiting for DynamoDB table '{}' to be ready.", tableName);
-
         Awaitility.await()
             .atMost(Duration.ofSeconds(maxWaitTime))            // maximum wait time
             .pollInterval(Duration.ofSeconds(checkInterval))    // frequency check time

@@ -6,7 +6,9 @@ import ch.qos.logback.core.LayoutBase;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import hiperium.city.functions.common.utils.DateTimeUtils;
+import hiperium.city.functions.common.utils.DateTimeUtil;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.DateTimeException;
 import java.time.Instant;
@@ -23,6 +25,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * It extends the LayoutBase class from the logback library.
  * The layout converts the logging event into a JSON string representation.
  */
+@Getter
+@Setter
 public class HiperiumLoggerLayout extends LayoutBase<ILoggingEvent> {
 
     private static final String LINE_BREAK = "\n";
@@ -37,6 +41,7 @@ public class HiperiumLoggerLayout extends LayoutBase<ILoggingEvent> {
 
     private String timezone;
     private String dateTimeFormat;
+
     private boolean useCompactMode = true;
     private boolean useFormattedTimestamps = false;
 
@@ -101,13 +106,13 @@ public class HiperiumLoggerLayout extends LayoutBase<ILoggingEvent> {
 
     private void initializeDateTimeFormat(final String dateTimeFormat) {
         if (Objects.isNull(dateTimeFormat) || dateTimeFormat.isBlank()) {
-            this.dateTimeFormatter = DateTimeUtils.getDateTimeFormatterUsingISO8601();
+            this.dateTimeFormatter = DateTimeUtil.getDateTimeFormatterUsingISO8601();
         } else {
             try {
                 this.dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimeFormat);
             } catch (IllegalArgumentException exception) {
                 super.addError("Invalid date and time format: " + dateTimeFormat + ". Using defaults.");
-                this.dateTimeFormatter = DateTimeUtils.getDateTimeFormatterUsingISO8601();
+                this.dateTimeFormatter = DateTimeUtil.getDateTimeFormatterUsingISO8601();
             }
         }
     }
@@ -138,7 +143,11 @@ public class HiperiumLoggerLayout extends LayoutBase<ILoggingEvent> {
         } else {
             Map<String, Object> messageMap = new LinkedHashMap<>();
             messageMap.put("message", loggingEvent.getFormattedMessage());
-            messageMap.put("detail",  throwableProxy.getMessage());
+            if (throwableProxy.getCause() != null) {
+                messageMap.put("cause", throwableProxy.getCause().getMessage());
+            } else {
+                messageMap.put("detail", throwableProxy.getMessage());
+            }
             logDataMap.put("error",   messageMap);
         }
     }
@@ -165,78 +174,5 @@ public class HiperiumLoggerLayout extends LayoutBase<ILoggingEvent> {
     @Override
     public void stop() {
         super.stop();
-    }
-
-    /**
-     * Retrieves the current date and time format used by the logger layout.
-     *
-     * @return A string representing the current date and time format.
-     */
-    public String getDateTimeFormat() {
-        return dateTimeFormat;
-    }
-
-    /**
-     * Sets the format for date and time used in the logging output.
-     *
-     * @param dateTimeFormat the desired date and time format pattern
-     */
-    public void setDateTimeFormat(String dateTimeFormat) {
-        this.dateTimeFormat = dateTimeFormat;
-    }
-
-    /**
-     * Retrieves the current timezone setting used by the logger layout.
-     *
-     * @return a string representing the current timezone setting.
-     */
-    public String getTimezone() {
-        return timezone;
-    }
-
-    /**
-     * Sets the timezone used for formatting date and time in the log output.
-     *
-     * @param timezone the ID of the desired time zone (e.g., "UTC", "America/New_York")
-     */
-    public void setTimezone(String timezone) {
-        this.timezone = timezone;
-    }
-
-    /**
-     * Checks if the logger layout is in compact mode.
-     *
-     * @return true if compact mode is enabled, false otherwise.
-     */
-    public boolean isUseCompactMode() {
-        return useCompactMode;
-    }
-
-    /**
-     * Sets whether the compact mode is used for the logger layout.
-     * Compact mode typically reduces the verbosity of the logging output.
-     *
-     * @param useCompactMode true to enable compact mode, false to disable it
-     */
-    public void setUseCompactMode(boolean useCompactMode) {
-        this.useCompactMode = useCompactMode;
-    }
-
-    /**
-     * Checks if the logger layout uses formatted timestamps.
-     *
-     * @return true if formatted timestamps are enabled, false otherwise.
-     */
-    public boolean isUseFormattedTimestamps() {
-        return useFormattedTimestamps;
-    }
-
-    /**
-     * Sets whether formatted timestamps should be used in the logger layout.
-     *
-     * @param useFormattedTimestamps true to enable formatted timestamps, false to use raw timestamps
-     */
-    public void setUseFormattedTimestamps(boolean useFormattedTimestamps) {
-        this.useFormattedTimestamps = useFormattedTimestamps;
     }
 }

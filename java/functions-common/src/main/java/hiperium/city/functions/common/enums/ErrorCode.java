@@ -1,5 +1,6 @@
 package hiperium.city.functions.common.enums;
 
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -7,6 +8,7 @@ import org.springframework.http.HttpStatus;
  * Each error code is associated with a specific type of error and includes a default description
  * that provides a brief description of the error.
  */
+@Getter
 public enum ErrorCode {
 
     /**
@@ -60,23 +62,5 @@ public enum ErrorCode {
     ErrorCode(String description, int httpStatus) {
         this.description = description;
         this.httpStatus = httpStatus;
-    }
-
-    /**
-     * Retrieves the general description associated with this error code.
-     *
-     * @return the general description as a String.
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * Retrieves the error code associated with this enum constant.
-     *
-     * @return the error code as an integer.
-     */
-    public int getHttpStatus() {
-        return httpStatus;
     }
 }

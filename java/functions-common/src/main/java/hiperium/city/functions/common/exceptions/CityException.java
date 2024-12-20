@@ -1,15 +1,14 @@
 package hiperium.city.functions.common.exceptions;
 
 import hiperium.city.functions.common.enums.ErrorCode;
+import lombok.Getter;
 
 /**
  * The CityException class is an exception thrown when there is an error related to a city.
  */
+@Getter
 public sealed class CityException extends RuntimeException
-    permits
-    InactiveCityException,
-    ResourceNotFoundException,
-    ValidationException {
+    permits InactiveCityException, ResourceNotFoundException, ValidationException {
 
     /**
      * The error code.
@@ -76,24 +75,5 @@ public sealed class CityException extends RuntimeException
         super(message, cause);
         this.code = code;
         this.requestId = requestId;
-    }
-
-    /**
-     * Retrieves the error code associated with this exception.
-     *
-     * @return the error code represented by an instance of ErrorCode.
-     */
-    public ErrorCode getCode() {
-        return code;
-    }
-
-    /**
-     * Returns the request ID associated with the exception. This ID can be used
-     * for tracing and tracking the specific request that led to the exception.
-     *
-     * @return the request ID or null if no request ID is associated.
-     */
-    public String getRequestId() {
-        return requestId;
     }
 }
