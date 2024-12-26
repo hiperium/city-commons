@@ -16,5 +16,3 @@ RUN curl -4 -L https://github.com/graalvm/graalvm-ce-builds/releases/download/jd
 RUN ln -s ${JAVA_HOME}/bin/jar       /usr/bin/jar          && \
     ln -s ${JAVA_HOME}/bin/java      /usr/bin/java         && \
     ln -s ${JAVA_HOME}/native-image  /usr/bin/native-image
-
-ENTRYPOINT ["sh"]

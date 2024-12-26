@@ -25,5 +25,3 @@ RUN ln -s ${JAVA_HOME}/bin/jar       /usr/bin/jar          && \
     ln -s ${JAVA_HOME}/bin/java      /usr/bin/java         && \
     ln -s ${JAVA_HOME}/native-image  /usr/bin/native-image && \
     ln -s ${MAVEN_HOME}/bin/mvn      /usr/bin/mvn
-
-ENTRYPOINT ["sh"]

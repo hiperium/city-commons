@@ -15,12 +15,14 @@ All you need to build this project is Docker.
 To build the image, you can run the following command:
 ```bash
 docker build -t hiperium/city-builder:1.0.0 .
+docker build -t hiperium/city-lambda:1.0.0 .
 ```
 
 ### How to test it using an interactive terminal?
 To enter to running container, you must execute the following command to initialize an interactive terminal:
 ```bash
-docker run -it --rm hiperium/city-builder:1.0.0
+docker run -it --rm --entrypoint /bin/bash hiperium/city-builder:1.0.0
+docker run -it --rm --entrypoint /bin/bash hiperium/city-lambda:1.0.0
 ```
 There, you can execute the following command to check the native-image version:
 ```bash
@@ -42,4 +44,12 @@ docker push hiperium/city-builder:1.0.0
 
 docker tag  hiperium/city-builder:1.0.0 hiperium/city-builder:latest
 docker push hiperium/city-builder:latest
+```
+
+```bash
+docker login
+docker push hiperium/city-lambda:1.0.0
+
+docker tag  hiperium/city-lambda:1.0.0 hiperium/city-lambda:latest
+docker push hiperium/city-lambda:latest
 ```

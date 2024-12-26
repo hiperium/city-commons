@@ -18,7 +18,6 @@
 
     <properties>
         <commons-io.version>1.3.2</commons-io.version>
-        <functions-common.version>1.0.0</functions-common.version>
     </properties>
 
     <dependencies>
@@ -28,27 +27,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>city.hiperium</groupId>
-            <artifactId>functions-common</artifactId>
-            <version>${functions-common.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <!-- Testing -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.vaadin.external.google</groupId>
-                    <artifactId>android-json</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
     </dependencies>
 

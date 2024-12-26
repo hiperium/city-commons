@@ -17,11 +17,11 @@
 
     <properties>
         <mapstruct.version>1.6.3</mapstruct.version>
-        <os-classifier.version>1.7.1</os-classifier.version>
+        <image-function-name>native-image</image-function-name>
         <aws-lambda-core.version>1.2.3</aws-lambda-core.version>
         <functions-common.version>1.0.0</functions-common.version>
         <spring-cloud-function.version>4.2.0</spring-cloud-function.version>
-        <native-maven-plugin.imageName>native-function</native-maven-plugin.imageName>
+        <spring-boot-thin-layout.version>1.0.31.RELEASE</spring-boot-thin-layout.version>
     </properties>
 
     <dependencyManagement>
@@ -52,17 +52,7 @@
         <!-- Spring Framework -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-function-webflux</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-function-adapter-aws</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-webmvc</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -85,27 +75,6 @@
 
         <!-- Testing -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.vaadin.external.google</groupId>
-                    <artifactId>android-json</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>io.projectreactor</groupId>
-            <artifactId>reactor-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-testcontainers</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>localstack</artifactId>
             <scope>test</scope>
@@ -118,31 +87,52 @@
     </dependencies>
 
     <build>
-        <extensions>
-            <extension>
-                <!-- Generate os.detected.classifier property -->
-                <groupId>kr.motd.maven</groupId>
-                <artifactId>os-maven-plugin</artifactId>
-                <version>${os-classifier.version}</version>
-            </extension>
-        </extensions>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
-                </configuration>
             </plugin>
         </plugins>
     </build>
 
     <profiles>
+        <profile>
+            <id>tracing-agent</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>process-classes</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>java</executable>
+                                    <arguments>
+                                        <argument>
+                                            -agentlib:native-image-agent=config-output-dir=${project.build.directory}/native-image
+                                        </argument>
+                                        <argument>-cp</argument>
+                                        <classpath/>
+                                        <!--suppress UnresolvedMavenProperty -->
+                                        <argument>${start-class}</argument>
+                                    </arguments>
+                                    <environmentVariables>
+                                        <SPRING_PROFILES_ACTIVE>local</SPRING_PROFILES_ACTIVE>
+                                        <SPRING_CLOUD_AWS_ENDPOINT>http://localhost:4566</SPRING_CLOUD_AWS_ENDPOINT>
+                                        <SPRING_DOCKER_COMPOSE_FILE>tools/docker/compose.yaml
+                                        </SPRING_DOCKER_COMPOSE_FILE>
+                                    </environmentVariables>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <profile>
             <id>native</id>
             <build>
@@ -157,7 +147,7 @@
                                 <configuration>
                                     <skip>false</skip>
                                     <fallback>false</fallback>
-                                    <imageName>${native-maven-plugin.imageName}</imageName>
+                                    <imageName>${image-function-name}</imageName>
                                     <buildArgs>
                                         <buildArg>--enable-url-protocols=http,https</buildArg>
                                         <buildArg>--initialize-at-build-time=org.slf4j.LoggerFactory</buildArg>

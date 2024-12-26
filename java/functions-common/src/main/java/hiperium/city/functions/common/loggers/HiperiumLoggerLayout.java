@@ -7,8 +7,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import hiperium.city.functions.common.utils.DateTimeUtil;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.DateTimeException;
 import java.time.Instant;
@@ -25,8 +23,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * It extends the LayoutBase class from the logback library.
  * The layout converts the logging event into a JSON string representation.
  */
-@Getter
-@Setter
 public class HiperiumLoggerLayout extends LayoutBase<ILoggingEvent> {
 
     private static final String LINE_BREAK = "\n";
@@ -174,5 +170,127 @@ public class HiperiumLoggerLayout extends LayoutBase<ILoggingEvent> {
     @Override
     public void stop() {
         super.stop();
+    }
+
+    /**
+     * Retrieves the current {@code ZoneId} used by the logger layout.
+     *
+     * @return the configured {@code ZoneId} instance.
+     */
+    public ZoneId getZoneId() {
+        return zoneId;
+    }
+
+    /**
+     * Sets the ZoneId used by this layout instance. The ZoneId determines the time zone
+     * used for formatting timestamps and other time-related operations.
+     *
+     * @param zoneId The ZoneId to set. Must not be null. If null is passed, the method
+     *               will throw a NullPointerException.
+     */
+    public void setZoneId(ZoneId zoneId) {
+        this.zoneId = zoneId;
+    }
+
+    /**
+     * Retrieves the configured {@link DateTimeFormatter} used for formatting date and time values.
+     *
+     * @return the {@link DateTimeFormatter} instance currently in use.
+     */
+    public DateTimeFormatter getDateTimeFormatter() {
+        return dateTimeFormatter;
+    }
+
+    /**
+     * Sets the DateTimeFormatter used for formatting timestamps in log events.
+     *
+     * @param dateTimeFormatter the DateTimeFormatter to be used for formatting timestamps.
+     */
+    public void setDateTimeFormatter(DateTimeFormatter dateTimeFormatter) {
+        this.dateTimeFormatter = dateTimeFormatter;
+    }
+
+    /**
+     * Retrieves the configured timezone for the logger layout.
+     *
+     * @return the configured timezone as a String.
+     */
+    public String getTimezone() {
+        return timezone;
+    }
+
+    /**
+     * Sets the timezone for the logger layout. The provided timezone will be used
+     * to format timestamps for log entries. If the provided timezone is invalid
+     * or null, a default system timezone will be applied.
+     *
+     * @param timezone the timezone string to set. This should be a valid timezone
+     *                 ID (e.g., "America/New_York"). If invalid, the default system
+     *                 timezone will be used instead.
+     */
+    public void setTimezone(String timezone) {
+        this.timezone = timezone;
+    }
+
+    /**
+     * Retrieves the date and time format configured for logging.
+     *
+     * @return the currently configured date and time format as a String.
+     */
+    public String getDateTimeFormat() {
+        return dateTimeFormat;
+    }
+
+    /**
+     * Sets the date and time format used within the layout.
+     *
+     * @param dateTimeFormat The date and time format pattern to be used.
+     *                       If the provided format is null or invalid,
+     *                       a default ISO 8601 format will be applied.
+     */
+    public void setDateTimeFormat(String dateTimeFormat) {
+        this.dateTimeFormat = dateTimeFormat;
+    }
+
+    /**
+     * Checks whether the compact mode is currently enabled for the logger layout.
+     *
+     * @return {@code true} if compact mode is enabled, otherwise {@code false}.
+     */
+    public boolean isUseCompactMode() {
+        return useCompactMode;
+    }
+
+    /**
+     * Sets whether or not the layout should use compact mode for its output.
+     * In compact mode, the output will not include additional formatting,
+     * such as indentation, to keep it minimal.
+     *
+     * @param useCompactMode true to enable compact mode; false to disable it and include formatting like indentation.
+     */
+    public void setUseCompactMode(boolean useCompactMode) {
+        this.useCompactMode = useCompactMode;
+    }
+
+    /**
+     * Indicates whether formatted timestamps are being used in the logging output.
+     *
+     * @return true if formatted timestamps are enabled, otherwise false.
+     */
+    public boolean isUseFormattedTimestamps() {
+        return useFormattedTimestamps;
+    }
+
+    /**
+     * Sets whether formatted timestamps should be used in the logging output.
+     * If enabled, timestamps will be formatted based on the configured date and time format.
+     * If disabled, raw timestamps will be used as epoch milliseconds.
+     *
+     * @param useFormattedTimestamps A boolean flag indicating whether to use formatted timestamps.
+     *                               {@code true} enables formatted timestamps,
+     *                               {@code false} uses raw epoch milliseconds.
+     */
+    public void setUseFormattedTimestamps(boolean useFormattedTimestamps) {
+        this.useFormattedTimestamps = useFormattedTimestamps;
     }
 }
